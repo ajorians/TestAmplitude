@@ -4,6 +4,9 @@
    {
       event EventHandler<TrackedEventArgs> OnTrackedEvent;
 
+      void StartSession();
+      void StopSession();
+
       void TrackEvent( string eventName );
       void TrackEventWithNumber( string eventName, int number );
    }

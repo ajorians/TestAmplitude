@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 using System.Windows.Input;
 
 namespace TestAmplitude
@@ -14,6 +9,8 @@ namespace TestAmplitude
 
       public MainWindowViewModel()
       {
+         APIKey = "";
+
          AmplitudeOutput = "Output:" + Environment.NewLine;
 
          TrackEventNameText = "Sample Event Name :)";
@@ -74,13 +71,19 @@ namespace TestAmplitude
       {
          if (_amplitude is null)
          {
-            _amplitude = new Amplitude( APIKey );
+            AmplitudeUserIDCreator amplitudeUserIDCreator = new();
+            AmplitudeDeviceIDCreator amplitudeDeviceIDCreator = new();
+            AmplitudeNetworkCalls amlitudeNetworkCalls = new( APIKey, amplitudeUserIDCreator.GetUserID(), amplitudeDeviceIDCreator.GetDeviceID() );
+            _amplitude = new Amplitude( amlitudeNetworkCalls );
             AmplitudeOutput += $"New session with Key ({APIKey}){Environment.NewLine}";
+
+            _amplitude.StartSession();
 
             _amplitude.OnTrackedEvent += OnTrackedEvent;
          }
          else
          {
+            _amplitude.StopSession();
             _amplitude = null;
             AmplitudeOutput += $"Cleared session{Environment.NewLine}";
          }
