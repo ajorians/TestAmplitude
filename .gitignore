@@ -135,3 +135,6 @@ $RECYCLE.BIN/
 *_wpftmp.csproj
 
 out/
+
+TestAmplitude/AmplitudeAPIKey.cs
+AmplitudeAPIKey.cs
