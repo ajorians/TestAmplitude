@@ -73,8 +73,13 @@ namespace TestAmplitude
          {
             AmplitudeUserIDCreator amplitudeUserIDCreator = new();
             AmplitudeDeviceIDCreator amplitudeDeviceIDCreator = new();
-            AmplitudeNetworkCalls amlitudeNetworkCalls = new( APIKey, amplitudeUserIDCreator.GetUserID(), amplitudeDeviceIDCreator.GetDeviceID() );
-            _amplitude = new Amplitude( amlitudeNetworkCalls );
+
+            AmplitudeNetworkCalls amplitudeNetworkCalls = new( APIKey, amplitudeUserIDCreator.GetUserID(), amplitudeDeviceIDCreator.GetDeviceID() );
+            AmplitudeEventQueue amplitudeEventQueue = new();
+            AmplitudeEventFactory amplitudeEventFactory = new( amplitudeUserIDCreator.GetUserID(), amplitudeDeviceIDCreator.GetDeviceID() );
+            AmplitudeBackgroundEventTransmitter amplitudeBackgroundEventTransmitter = new( amplitudeNetworkCalls, amplitudeEventQueue );
+            _amplitude = new Amplitude( amplitudeEventFactory, amplitudeNetworkCalls, amplitudeBackgroundEventTransmitter );
+
             AmplitudeOutput += $"New session with Key ({APIKey}){Environment.NewLine}";
 
             _amplitude.StartSession();

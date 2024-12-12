@@ -6,7 +6,7 @@ namespace TestAmplitude
    //Purpose: Do Network calls
    //Network rate-limiting ought to be done by another class.
    //Checking/Limiting number of items per network request ought to be done by another class
-   //Validating event names are not greater than 1024 characters/whateve ought to be done by another class
+   //Validating event names are not greater than 1024 characters/whatever ought to be done by another class
    //Offline serializing/deserializing ought to be done by another class.
    //Offloading to a thread was intended to be in another class.  Though maybe async is OK?
    //This is intended that you can stop and start as many times as needed.
@@ -15,7 +15,7 @@ namespace TestAmplitude
    {
       private const string Endpoint = "https://api2.amplitude.com/2/httpapi";
       private readonly string _apiKey;
-      private readonly string _userID;
+      private readonly string _userID;//Might remove this if start/end session could be an AmplitudeEvent
       private readonly string _deviceID;
 
       private bool _sessionStarted;
@@ -99,7 +99,7 @@ namespace TestAmplitude
          return !_sessionStarted;
       }
 
-      public async Task<bool> TrackEvent( string eventName )
+      public async Task<bool> TrackEvents( IEnumerable<AmplitudeEvent> events )
       {
          if (!_sessionStarted)
          {
@@ -115,7 +115,7 @@ namespace TestAmplitude
             AmplitudeSimpleRequest request = new()
             {
                APIKey = _apiKey,
-               Events = [new AmplitudeEvent(){ EventType= eventName, Time = DateTime.Now, UserID=_userID, DeviceID = _deviceID }]
+               Events = events
             };
 
             string jsonData = request.GetJson();
@@ -133,6 +133,8 @@ namespace TestAmplitude
 
          return false;
       }
+
+      public async Task<bool> TrackEvent( string eventName ) => await TrackEvents( [new() { EventType = eventName, UserID = _userID, DeviceID = _deviceID, Time = DateTime.Now }] );
 
       public void TrackEventWithNumber( string eventName, int number )
       {

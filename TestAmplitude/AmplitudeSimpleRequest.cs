@@ -8,7 +8,7 @@ namespace TestAmplitude
       public string APIKey { get; set; }
 
       [JsonProperty( "events" )]
-      public List<AmplitudeEvent> Events { get; set; }
+      public IEnumerable<AmplitudeEvent> Events { get; set; }
 
       public string GetJson() => JsonConvert.SerializeObject( this );
    }
