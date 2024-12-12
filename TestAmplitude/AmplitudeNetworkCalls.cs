@@ -133,15 +133,5 @@ namespace TestAmplitude
 
          return false;
       }
-
-      public async Task<bool> TrackEvent( string eventName ) => await TrackEvents( [new() { EventType = eventName, UserID = _userID, DeviceID = _deviceID, Time = DateTime.Now }] );
-
-      public void TrackEventWithNumber( string eventName, int number )
-      {
-         if (!_sessionStarted)
-         {
-            throw new InvalidOperationException( "Session needs to be started first" );
-         }
-      }
    }
 }

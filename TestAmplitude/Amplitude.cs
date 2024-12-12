@@ -34,13 +34,8 @@
 
       public void TrackEvent( string eventName )
       {
-#if true
          //Add this event to something that is responsible for handling it on the background such that this function can quickly return
          _amplitudeBackgroundEventTransmitter.AddEvent( _amplitudeEventFactory.CreateEvent( eventName ) );
-#else
-         //This transmits it directly.  Will be removed.
-         _amplitudeNetworkCalls.TrackEvent( eventName );
-#endif
 
          OnTrackedEvent?.Invoke( this, new() { EventName = eventName } );
       }
