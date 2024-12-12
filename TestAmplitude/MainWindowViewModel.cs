@@ -9,7 +9,7 @@ namespace TestAmplitude
 
       public MainWindowViewModel()
       {
-         APIKey = "";
+         APIKey = AmplitudeAPIKey.APIKey;
 
          AmplitudeOutput = "Output:" + Environment.NewLine;
 
