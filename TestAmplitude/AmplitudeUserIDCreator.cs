@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 
 namespace TestAmplitude
 {
@@ -27,10 +22,7 @@ namespace TestAmplitude
          _userID = userID;
       }
 
-      public string GetUserID()
-      {
-         return _userID;
-      }
+      public string GetUserID() => _userID;
 
       private string GenerateNewUserID()
       {

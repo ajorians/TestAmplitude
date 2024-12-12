@@ -1,6 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Windows.Input;
 
 namespace TestAmplitude
@@ -42,10 +40,7 @@ namespace TestAmplitude
       #region ICommand Members
 
       [DebuggerStepThrough]
-      public bool CanExecute( object parameter )
-      {
-         return _canExecute?.Invoke() ?? true;
-      }
+      public bool CanExecute( object parameter ) => _canExecute?.Invoke() ?? true;
 
       public event EventHandler CanExecuteChanged
       {
@@ -61,10 +56,7 @@ namespace TestAmplitude
          }
       }
 
-      public void Execute( object parameter )
-      {
-         _execute();
-      }
+      public void Execute( object parameter ) => _execute();
 
       #endregion // ICommand Members
    }

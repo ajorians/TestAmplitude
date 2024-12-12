@@ -145,10 +145,7 @@ namespace TestAmplitude
          }
       }
 
-      private void OnTrackEvent()
-      {
-         _amplitude.TrackEvent( TrackEventNameText );
-      }
+      private void OnTrackEvent() => _amplitude.TrackEvent( TrackEventNameText );
 
       private ICommand _trackEventCommand;
       public ICommand TrackEventCommand => _trackEventCommand ??= new RelayCommand( () => OnTrackEvent() );
@@ -185,10 +182,7 @@ namespace TestAmplitude
          }
       }
 
-      private void OnTrackEventWithNumber()
-      {
-         _amplitude.TrackEventWithNumber( TrackEventWithNumberNameText, int.Parse( TrackEventWithNumberNumberText ) );
-      }
+      private void OnTrackEventWithNumber() => _amplitude.TrackEventWithNumber( TrackEventWithNumberNameText, int.Parse( TrackEventWithNumberNumberText ) );
 
       private ICommand _trackEventWithNumberCommand;
       public ICommand TrackEventWithNumberCommand => _trackEventWithNumberCommand ??= new RelayCommand( () => OnTrackEventWithNumber() );
@@ -223,10 +217,7 @@ namespace TestAmplitude
          }
       }
 
-      private void OnPropertyChanged( string propertyName )
-      {
-         PropertyChanged?.Invoke( this, new PropertyChangedEventArgs( propertyName ) );
-      }
+      private void OnPropertyChanged( string propertyName ) => PropertyChanged?.Invoke( this, new PropertyChangedEventArgs( propertyName ) );
       public event PropertyChangedEventHandler PropertyChanged;
    }
 }

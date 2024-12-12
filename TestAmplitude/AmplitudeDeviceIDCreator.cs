@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 
 namespace TestAmplitude
 {
@@ -27,14 +22,8 @@ namespace TestAmplitude
          _deviceID = deviceID;
       }
 
-      public string GetDeviceID()
-      {
-         return _deviceID;
-      }
+      public string GetDeviceID() => _deviceID;
 
-      private string GenerateNewDeviceID()
-      {
-         return Guid.NewGuid().ToString();
-      }
+      private string GenerateNewDeviceID() => Guid.NewGuid().ToString();
    }
 }

@@ -10,15 +10,9 @@
          _amplitudeNetworkCalls = amplitudeNetworkCalls ?? throw new ArgumentNullException( nameof( amplitudeNetworkCalls ) );
       }
 
-      public void StartSession()
-      {
-         _amplitudeNetworkCalls.StartSession();
-      }
+      public void StartSession() => _amplitudeNetworkCalls.StartSession();
 
-      public void StopSession()
-      {
-         _amplitudeNetworkCalls.StopSession();
-      }
+      public void StopSession() => _amplitudeNetworkCalls.StopSession();
 
       public void TrackEvent( string eventName )
       {
@@ -27,9 +21,6 @@
          OnTrackedEvent?.Invoke( this, new() { EventName = eventName } );
       }
 
-      public void TrackEventWithNumber( string eventName, int number )
-      {
-         OnTrackedEvent?.Invoke( this, new() { EventName = eventName, NumberValue = number } );
-      }
+      public void TrackEventWithNumber( string eventName, int number ) => OnTrackedEvent?.Invoke( this, new() { EventName = eventName, NumberValue = number } );
    }
 }
