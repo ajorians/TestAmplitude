@@ -14,6 +14,9 @@ namespace TestAmplitude
       [JsonProperty( "event_type" )]
       public string EventType { get; set; }
 
+      [JsonProperty( "user_properties")]
+      public Dictionary<string, string> Properties { get; set; }
+
       [JsonProperty( "time" )]
       [JsonConverter( typeof( UnixDateTimeConverter ) )]
       public DateTime Time { get; set; } = DateTime.Now;

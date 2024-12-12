@@ -29,5 +29,21 @@ namespace TestAmplitude
 
          return result;
       }
+
+      public AmplitudeEvent CreateEventWithNumber( string eventName, int number )
+      {
+         Dictionary<string, string> properties = new(){ ["Number"] = number.ToString() };
+
+         AmplitudeEvent result = new()
+         {
+            EventType = eventName,
+            Properties = properties,
+            UserID = _userID,
+            DeviceID = _deviceID,
+            Time = DateTime.Now
+         };
+
+         return result;
+      }
    }
 }
