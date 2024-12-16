@@ -40,12 +40,12 @@
          OnTrackedEvent?.Invoke( this, new() { EventName = eventName } );
       }
 
-      public void TrackEventWithNumber( string eventName, int number )
+      public void TrackEventWithProperties( string eventName, IDictionary<string, string> eventProperties )
       {
          //Add this event to something that is responsible for handling it on the background such that this function can quickly return
-         _amplitudeBackgroundEventTransmitter.AddEvent( _amplitudeEventFactory.CreateEventWithNumber( eventName, number ) );
+         _amplitudeBackgroundEventTransmitter.AddEvent( _amplitudeEventFactory.CreateEventWithProperties( eventName, eventProperties ) );
 
-         OnTrackedEvent?.Invoke( this, new() { EventName = eventName, NumberValue = number } );
+         OnTrackedEvent?.Invoke( this, new () { EventName = eventName, EventProperties = eventProperties } );
       }
    }
 }

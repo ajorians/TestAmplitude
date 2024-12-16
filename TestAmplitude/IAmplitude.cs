@@ -10,6 +10,7 @@
 
       //void return on purpose.  You assume it'll be successfully tracked.
       void TrackEvent( string eventName );
-      void TrackEventWithNumber( string eventName, int number );
+
+      void TrackEventWithProperties( string eventName, IDictionary<string, string> properties );
    }
 }

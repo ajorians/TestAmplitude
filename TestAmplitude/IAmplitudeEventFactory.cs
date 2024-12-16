@@ -3,6 +3,7 @@
    public interface IAmplitudeEventFactory
    {
       AmplitudeEvent CreateEvent( string eventName );
-      AmplitudeEvent CreateEventWithNumber( string eventName, int number );
+
+      AmplitudeEvent CreateEventWithProperties( string eventName, IDictionary<string, string> eventProperties );
    }
 }

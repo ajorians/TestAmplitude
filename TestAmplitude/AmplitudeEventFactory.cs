@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TestAmplitude
+﻿namespace TestAmplitude
 {
    public class AmplitudeEventFactory : IAmplitudeEventFactory
    {
@@ -30,14 +24,12 @@ namespace TestAmplitude
          return result;
       }
 
-      public AmplitudeEvent CreateEventWithNumber( string eventName, int number )
+      public AmplitudeEvent CreateEventWithProperties( string eventName, IDictionary<string, string> eventProperties )
       {
-         Dictionary<string, string> properties = new(){ ["Number"] = number.ToString() };
-
          AmplitudeEvent result = new()
          {
             EventType = eventName,
-            Properties = properties,
+            EventProperties = eventProperties,
             UserID = _userID,
             DeviceID = _deviceID,
             Time = DateTime.Now

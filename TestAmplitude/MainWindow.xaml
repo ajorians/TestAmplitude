@@ -74,20 +74,21 @@
                  Height="25"
                  HorizontalAlignment="Stretch"
                  Command="{Binding TrackEventCommand, Mode=OneTime}" />
+         <!--Media Import-->
          <TextBlock Grid.Row="1"
                     Grid.Column="0"
-                    Text="Track Event With Number"
+                    Text="Media Import Example"
                     Margin="10,0,10,0"
                     VerticalAlignment="Center" />
          <TextBox Grid.Row="1"
                   Grid.Column="1"
-                  Text="{Binding TrackEventWithNumberNameText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                  Text="{Binding SourceText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                   Height="25"
                   HorizontalAlignment="Stretch"
                   Margin="10,0,10,0"/>
          <TextBox Grid.Row="1"
                   Grid.Column="2"
-                  Text="{Binding TrackEventWithNumberNumberText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                  Text="{Binding DurationInSecondsText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                   Height="25"
                   HorizontalAlignment="Stretch"
                   Padding="10,0,10,0"/>
@@ -95,10 +96,10 @@
                  Grid.Column="3"
                  Content="Track"
                  Margin="10,0,10,0"
-                 IsEnabled="{Binding TrackEventWithNumberNameEnabled, Mode=OneWay}"
+                 IsEnabled="{Binding TrackMediaImportEnabled, Mode=OneWay}"
                  Height="25"
                  HorizontalAlignment="Stretch"
-                 Command="{Binding TrackEventWithNumberCommand, Mode=OneTime}" />
+                 Command="{Binding TrackMediaImportEventCommand, Mode=OneTime}" />
       </Grid>
       <TextBox Grid.Row="2"
                Grid.Column="0"

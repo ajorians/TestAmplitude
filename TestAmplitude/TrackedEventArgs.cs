@@ -3,7 +3,6 @@
    public class TrackedEventArgs
    {
       public string EventName;
-      public int? NumberValue;
-      public string? TextValue;
+      public IDictionary<string, string>? EventProperties;
    }
 }

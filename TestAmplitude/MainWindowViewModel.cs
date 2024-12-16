@@ -15,8 +15,8 @@ namespace TestAmplitude
 
          TrackEventNameText = "Sample Event Name :)";
 
-         TrackEventWithNumberNameText = "Sample Event W/Num Name :)";
-         TrackEventWithNumberNumberText = $"{0}";
+         SourceText = "fuse";
+         DurationInSecondsText = "0";
       }
 
       private string _apiKey;
@@ -100,9 +100,19 @@ namespace TestAmplitude
 
       private void OnTrackedEvent( object sender, TrackedEventArgs e )
       {
-         if (e.NumberValue.HasValue)
+         if ( e.EventProperties is not null )
          {
-            AmplitudeOutput += $"Tracked Event: '{e.EventName}' with number: '{e.NumberValue.Value}'{Environment.NewLine}";
+            static string propertiesToText( IDictionary<string, string> eventProperties )
+            {
+               string result = string.Empty;
+               foreach( var item in eventProperties)
+               {
+                  result += $"[{item.Key}] = '{item.Value}'; ";
+               }
+               return result;
+            }
+
+            AmplitudeOutput += $"Tracked Event: '{e.EventName}' with event properties: \"{propertiesToText( e.EventProperties )}\"{Environment.NewLine}";
          }
          else
          {
@@ -155,52 +165,66 @@ namespace TestAmplitude
       private ICommand _trackEventCommand;
       public ICommand TrackEventCommand => _trackEventCommand ??= new RelayCommand( () => OnTrackEvent() );
 
-      //Event With Number
+      //Media Import Example
 
-      private string _trackEventWithNumberNameText;
-      public string TrackEventWithNumberNameText
+      private string _sourceText;
+      public string SourceText
       {
-         get => _trackEventWithNumberNameText;
+         get => _sourceText;
          set
          {
-            if (_trackEventWithNumberNameText != value)
+            if (_sourceText != value)
             {
-               _trackEventWithNumberNameText = value;
-               OnPropertyChanged( nameof( TrackEventWithNumberNameText ) );
-               OnPropertyChanged( nameof( TrackEventWithNumberNameEnabled ) );
+               _sourceText = value;
+               OnPropertyChanged( nameof( SourceText ) );
+               OnPropertyChanged( nameof( TrackMediaImportEnabled ) );
             }
          }
       }
 
-      private string _trackEventWithNumberNumberText;
-      public string TrackEventWithNumberNumberText
+      private string _durationInSecondsText;
+      public string DurationInSecondsText
       {
-         get => _trackEventWithNumberNumberText;
+         get => _durationInSecondsText;
          set
          {
-            if (_trackEventWithNumberNumberText != value)
+            if (_durationInSecondsText != value)
             {
-               _trackEventWithNumberNumberText = value;
-               OnPropertyChanged( nameof( TrackEventWithNumberNumberText ) );
-               OnPropertyChanged( nameof( TrackEventWithNumberNameEnabled ) );
+               _durationInSecondsText = value;
+               OnPropertyChanged( nameof( DurationInSecondsText ) );
+               OnPropertyChanged( nameof( TrackMediaImportEnabled ) );
             }
          }
       }
 
-      private void OnTrackEventWithNumber() => _amplitude.TrackEventWithNumber( TrackEventWithNumberNameText, int.Parse( TrackEventWithNumberNumberText ) );
+      private void OnTrackMediaImport()
+      {
+         Dictionary<string, string> eventProperties = new Dictionary<string, string>()
+         {
+            ["aspect ratio"] = "wide",
+            ["content type"] = "video",
+            ["duration"] = DurationInSecondsText,
+            ["format"] = "tiff",
+            ["import origin"] = "powerpoint",
+            ["import source"] = SourceText,
+            ["new project"] = "true",
+         };
 
-      private ICommand _trackEventWithNumberCommand;
-      public ICommand TrackEventWithNumberCommand => _trackEventWithNumberCommand ??= new RelayCommand( () => OnTrackEventWithNumber() );
+         _amplitude.TrackEventWithProperties( "media imported", eventProperties );
+      }
 
-      public bool TrackEventWithNumberNameEnabled
+      private ICommand _trackMediaImportEventCommand;
+      public ICommand TrackMediaImportEventCommand => _trackMediaImportEventCommand ??= new RelayCommand( () => OnTrackMediaImport() );
+
+      public bool TrackMediaImportEnabled
       {
          get
          {
-            if (string.IsNullOrEmpty( TrackEventWithNumberNameText ))
+            if (string.IsNullOrEmpty( SourceText ))
             {
                return false;
             }
-            if (string.IsNullOrEmpty( TrackEventWithNumberNumberText ))
+            if (string.IsNullOrEmpty( DurationInSecondsText ) )
             {
                return false;
             }
