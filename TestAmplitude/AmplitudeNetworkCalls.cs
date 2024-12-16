@@ -19,8 +19,6 @@ namespace TestAmplitude
       private readonly string _deviceID;
       private readonly IAmplitudeUserPropertiesProvider _userPropertiesProvider;
 
-      private bool _sessionStarted;
-
       public AmplitudeNetworkCalls( string apiKey, string userID, string deviceID, IAmplitudeUserPropertiesProvider userPropertiesProvider )
       {
          _apiKey = apiKey;
@@ -29,87 +27,11 @@ namespace TestAmplitude
          _userPropertiesProvider = userPropertiesProvider ?? throw new ArgumentNullException( nameof( userPropertiesProvider ) );
       }
 
-      public async Task<bool> StartSession()
-      {
-         if (_sessionStarted)
-         {
-            throw new InvalidOperationException( "Cannot start a session without stopping it first" );
-         }
-
-         using var client = new HttpClient();
-
-         try
-         {
-            Uri url = new( Endpoint );
-
-            AmplitudeSimpleRequest request = new()
-            {
-               APIKey = _apiKey,
-               Events = [new AmplitudeEvent(){ EventType= "session_start", UserProperties = _userPropertiesProvider.GetUserProperties(), Time = DateTime.Now, UserID=_userID, DeviceID=_deviceID}]
-            };
-
-            string jsonData = request.GetJson();
-
-            using HttpContent content = new StringContent( jsonData, Encoding.UTF8, "application/json" );
-
-            using HttpResponseMessage response = await client.PostAsync( url, content );
-
-            _sessionStarted = response.IsSuccessStatusCode;
-         }
-         catch (Exception ex)
-         {
-            //_errorLogger.LogException( ex );
-            return false;
-         }
-
-         return _sessionStarted;
-      }
-
-      public async Task<bool> StopSession()
-      {
-         if (!_sessionStarted)
-         {
-            throw new InvalidOperationException( "Cannot stop a session that hasn't been started" );
-         }
-
-         using var client = new HttpClient();
-
-         try
-         {
-            Uri url = new( Endpoint );
-
-            AmplitudeSimpleRequest request = new()
-            {
-               APIKey = _apiKey,
-               Events = [new AmplitudeEvent(){ EventType= "session_end", UserProperties = _userPropertiesProvider.GetUserProperties(), Time = DateTime.Now, UserID=_userID, DeviceID = _deviceID }]
-            };
-
-            string jsonData = request.GetJson();
-
-            using HttpContent content = new StringContent( jsonData, Encoding.UTF8, "application/json" );
-
-            using HttpResponseMessage response = await client.PostAsync( url, content );
-
-            _sessionStarted = !response.IsSuccessStatusCode;
-         }
-         catch (Exception ex)
-         {
-            //_errorLogger.LogException( ex );
-            return false;
-         }
-
-         return !_sessionStarted;
-      }
-
       public async Task<bool> TrackEvents( IEnumerable<AmplitudeEvent> events )
       {
-         if (!_sessionStarted)
-         {
-            throw new InvalidOperationException( "Session needs to be started first" );
-         }
-
          using var client = new HttpClient();
 
+#pragma warning disable CS0168 // Variable is declared but never used
          try
          {
             Uri url = new( Endpoint );
@@ -128,10 +50,11 @@ namespace TestAmplitude
 
             return response.IsSuccessStatusCode;
          }
-         catch (Exception ex)
+         catch ( Exception ex )
          {
             //_errorLogger.LogException( ex )
          }
+#pragma warning restore CS0168 // Variable is declared but never used
 
          return false;
       }

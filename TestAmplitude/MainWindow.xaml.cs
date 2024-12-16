@@ -11,6 +11,13 @@ namespace TestAmplitude
       {
          DataContext = new MainWindowViewModel();
          InitializeComponent();
+
+         Closing += MainWindow_Closing;
+      }
+
+      private void MainWindow_Closing( object sender, System.ComponentModel.CancelEventArgs e )
+      {
+         (DataContext as MainWindowViewModel).OnClosing( sender, e );
       }
    }
 }

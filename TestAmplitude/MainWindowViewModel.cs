@@ -19,6 +19,19 @@ namespace TestAmplitude
          DurationInSecondsText = "0";
       }
 
+      public void OnClosing( object sender, CancelEventArgs e )
+      {
+         if (_amplitude is not null)
+         {
+            _amplitude.StopSession();
+            //This sleep is just a little bit in case it helps make it so the stop session.
+            //This should be small enough not to be noticable; but something
+            Thread.Sleep( TimeSpan.FromMilliseconds( 25 ) );
+            _amplitude.Shutdown();
+            _amplitude = null;
+         }
+      }
+
       private string _apiKey;
       public string APIKey
       {
@@ -46,7 +59,7 @@ namespace TestAmplitude
       {
          get
          {
-            if (_amplitude is null)
+            if ( _amplitude is null )
             {
                return "Start Session";
             }
@@ -91,6 +104,10 @@ namespace TestAmplitude
          else
          {
             _amplitude.StopSession();
+            //This sleep is just a little bit in case it helps make it so the stop session.
+            //This should be small enough not to be noticable; but something
+            Thread.Sleep( TimeSpan.FromMilliseconds( 25 ) );
+            _amplitude.Shutdown();
             _amplitude = null;
             AmplitudeOutput += $"Cleared session{Environment.NewLine}";
          }
@@ -102,6 +119,7 @@ namespace TestAmplitude
 
       private void OnTrackedEvent( object sender, TrackedEventArgs e )
       {
+         //Session started/ended don't have event properties; but I figure no reason to display anything.
          if ( e.EventProperties is not null )
          {
             static string propertiesToText( IDictionary<string, string> eventProperties )
@@ -115,10 +133,6 @@ namespace TestAmplitude
             }
 
             AmplitudeOutput += $"Tracked Event: '{e.EventName}' with event properties: \"{propertiesToText( e.EventProperties )}\"{Environment.NewLine}";
-         }
-         else
-         {
-            AmplitudeOutput += $"Tracked Event: '{e.EventName}'{Environment.NewLine}";
          }
       }
 
@@ -249,6 +263,7 @@ namespace TestAmplitude
       }
 
       private void OnPropertyChanged( string propertyName ) => PropertyChanged?.Invoke( this, new PropertyChangedEventArgs( propertyName ) );
+
       public event PropertyChangedEventHandler PropertyChanged;
    }
 }

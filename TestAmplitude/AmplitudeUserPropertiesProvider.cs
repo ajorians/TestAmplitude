@@ -34,7 +34,7 @@ namespace TestAmplitude
 
       public IDictionary<string, string> GetUserProperties()
       {
-         Dictionary<string, string> result = _userProperties;
+         SortedDictionary<string, string> result = new( _userProperties );
 
          //These values might only be know after taking a survey/signing in
          //Real code would probably ask via an injected interface

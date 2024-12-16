@@ -24,12 +24,28 @@
          _amplitudeBackgroundEventTransmitter.Shutdown();
       }
 
-      public void StartSession() => _amplitudeNetworkCalls.StartSession();
+      public void StartSession()
+      {
+         string eventName = "session_start";
+         Dictionary<string, string> eventProperties = new();
+
+         //Add this event to something that is responsible for handling it on the background such that this function can quickly return
+         _amplitudeBackgroundEventTransmitter.AddEvent( _amplitudeEventFactory.CreateEventWithProperties( eventName, eventProperties ) );
+
+         OnTrackedEvent?.Invoke( this, new() { EventName = eventName, EventProperties = eventProperties } );
+      }
 
       public void StopSession()
       {
-         Shutdown();
-         _amplitudeNetworkCalls.StopSession();
+         string eventName = "session_end";
+         Dictionary<string, string> eventProperties = new();
+
+         //Add this event to something that is responsible for handling it on the background such that this function can quickly return
+         _amplitudeBackgroundEventTransmitter.AddEvent( _amplitudeEventFactory.CreateEventWithProperties( eventName, eventProperties ) );
+
+         OnTrackedEvent?.Invoke( this, new() { EventName = eventName, EventProperties = eventProperties } );
+
+         _amplitudeBackgroundEventTransmitter.BeginShutdown();
       }
 
       public void TrackEventWithProperties( string eventName, IDictionary<string, string> eventProperties )
