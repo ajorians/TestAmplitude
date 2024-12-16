@@ -18,13 +18,15 @@ namespace TestAmplitude
       private readonly string _userID;//Might remove this if start/end session could be an AmplitudeEvent
       private readonly string _deviceID;
       private readonly IAmplitudeUserPropertiesProvider _userPropertiesProvider;
+      private readonly IPretendOffline _pretendOffline;
 
-      public AmplitudeNetworkCalls( string apiKey, string userID, string deviceID, IAmplitudeUserPropertiesProvider userPropertiesProvider )
+      public AmplitudeNetworkCalls( string apiKey, string userID, string deviceID, IAmplitudeUserPropertiesProvider userPropertiesProvider, IPretendOffline pretendOffline )
       {
          _apiKey = apiKey;
          _userID = userID;
          _deviceID = deviceID;
          _userPropertiesProvider = userPropertiesProvider ?? throw new ArgumentNullException( nameof( userPropertiesProvider ) );
+         _pretendOffline = pretendOffline ?? throw new ArgumentNullException( nameof ( pretendOffline ) );
       }
 
       public async Task<bool> TrackEvents( IEnumerable<AmplitudeEvent> events )
@@ -45,6 +47,11 @@ namespace TestAmplitude
             string jsonData = request.GetJson();
 
             using HttpContent content = new StringContent( jsonData, Encoding.UTF8, "application/json" );
+
+            if ( _pretendOffline.IsOffline() )
+            {
+               throw new HttpRequestException();
+            }
 
             using HttpResponseMessage response = await client.PostAsync( url, content );
 

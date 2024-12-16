@@ -3,7 +3,7 @@ using System.Windows.Input;
 
 namespace TestAmplitude
 {
-   public class MainWindowViewModel : INotifyPropertyChanged
+   public class MainWindowViewModel : INotifyPropertyChanged, IPretendOffline
    {
       private IAmplitude _amplitude;
 
@@ -17,6 +17,8 @@ namespace TestAmplitude
 
          SourceText = "fuse";
          DurationInSecondsText = "0";
+
+         IsOnline = true;
       }
 
       public void OnClosing( object sender, CancelEventArgs e )
@@ -89,7 +91,7 @@ namespace TestAmplitude
 
             AmplitudeUserPropertiesProvider amplitudeUserPropertiesProvider = new();
 
-            AmplitudeNetworkCalls amplitudeNetworkCalls = new( APIKey, amplitudeUserIDCreator.GetUserID(), amplitudeDeviceIDCreator.GetDeviceID(), amplitudeUserPropertiesProvider );
+            AmplitudeNetworkCalls amplitudeNetworkCalls = new( APIKey, amplitudeUserIDCreator.GetUserID(), amplitudeDeviceIDCreator.GetDeviceID(), amplitudeUserPropertiesProvider, this as IPretendOffline );
             AmplitudeEventQueue amplitudeEventQueue = new( @"C:\Users\a.orians\AppData\Local\TechSmith\Camtasia Studio" );
             AmplitudeEventFactory amplitudeEventFactory = new( amplitudeUserIDCreator.GetUserID(), amplitudeDeviceIDCreator.GetDeviceID(), amplitudeUserPropertiesProvider );
             AmplitudeExponentialBackoff amplitudeExponentialBackoff = new();
@@ -249,6 +251,20 @@ namespace TestAmplitude
          }
       }
 
+      private bool _isOnline = false;
+      public bool IsOnline
+      {
+         get => _isOnline;
+         set
+         {
+            if (_isOnline != value)
+            {
+               _isOnline = value;
+               OnPropertyChanged( nameof( IsOnline ) );
+            }
+         }
+      }
+
       private string _amplitudeOutput;
       public string AmplitudeOutput
       {
@@ -264,6 +280,7 @@ namespace TestAmplitude
       }
 
       private void OnPropertyChanged( string propertyName ) => PropertyChanged?.Invoke( this, new PropertyChangedEventArgs( propertyName ) );
+      public bool IsOffline() => !_isOnline;
 
       public event PropertyChangedEventHandler PropertyChanged;
    }

@@ -16,9 +16,10 @@
 
    <Grid>
       <Grid.RowDefinitions>
-         <RowDefinition Height="20" />
-         <RowDefinition Height="*" />
-         <RowDefinition Height="*" />
+         <RowDefinition Height="20" /><!--API Key-->
+         <RowDefinition Height="*" /><!--Track Area-->
+         <RowDefinition Height="20" /><!--Offline checkbox-->
+         <RowDefinition Height="*" /><!--Output Area-->
       </Grid.RowDefinitions>
       <Grid.ColumnDefinitions>
          <ColumnDefinition Width="Auto" />
@@ -101,7 +102,12 @@
                  HorizontalAlignment="Stretch"
                  Command="{Binding TrackMediaImportEventCommand, Mode=OneTime}" />
       </Grid>
-      <TextBox Grid.Row="2"
+      <CheckBox Grid.Row="2"
+                Grid.Column="0"
+                Grid.ColumnSpan="3"
+                Content="Online"
+                IsChecked="{Binding IsOnline, Mode=TwoWay}" />
+      <TextBox Grid.Row="3"
                Grid.Column="0"
                Grid.ColumnSpan="3"
                VerticalScrollBarVisibility="Visible"

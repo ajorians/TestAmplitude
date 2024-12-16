@@ -22,6 +22,8 @@ namespace TestAmplitude
       {
          _persistEventPath = persistEventPath;
 
+         _isUsingSerializedEvents = true;
+         _serializedFilename = string.Empty;
          CheckFiles();
       }
 
@@ -85,7 +87,10 @@ namespace TestAmplitude
          {
             CheckFiles();
 
-            return _serializedEvents.Take( Math.Min( numRequestedEvents, _serializedEvents.Count ) );
+            if( _serializedEvents is not null )
+            {
+               return _serializedEvents.Take( Math.Min( numRequestedEvents, _serializedEvents.Count ) );
+            }
          }
 
          lock (_lockPendingEvents)
