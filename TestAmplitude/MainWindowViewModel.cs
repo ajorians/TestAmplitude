@@ -74,9 +74,11 @@ namespace TestAmplitude
             AmplitudeUserIDCreator amplitudeUserIDCreator = new();
             AmplitudeDeviceIDCreator amplitudeDeviceIDCreator = new();
 
-            AmplitudeNetworkCalls amplitudeNetworkCalls = new( APIKey, amplitudeUserIDCreator.GetUserID(), amplitudeDeviceIDCreator.GetDeviceID() );
+            AmplitudeUserPropertiesProvider amplitudeUserPropertiesProvider = new();
+
+            AmplitudeNetworkCalls amplitudeNetworkCalls = new( APIKey, amplitudeUserIDCreator.GetUserID(), amplitudeDeviceIDCreator.GetDeviceID(), amplitudeUserPropertiesProvider );
             AmplitudeEventQueue amplitudeEventQueue = new();
-            AmplitudeEventFactory amplitudeEventFactory = new( amplitudeUserIDCreator.GetUserID(), amplitudeDeviceIDCreator.GetDeviceID() );
+            AmplitudeEventFactory amplitudeEventFactory = new( amplitudeUserIDCreator.GetUserID(), amplitudeDeviceIDCreator.GetDeviceID(), amplitudeUserPropertiesProvider );
             AmplitudeBackgroundEventTransmitter amplitudeBackgroundEventTransmitter = new( amplitudeNetworkCalls, amplitudeEventQueue );
             _amplitude = new Amplitude( amplitudeEventFactory, amplitudeNetworkCalls, amplitudeBackgroundEventTransmitter );
 
@@ -160,7 +162,7 @@ namespace TestAmplitude
          }
       }
 
-      private void OnTrackEvent() => _amplitude.TrackEvent( TrackEventNameText );
+      private void OnTrackEvent() => _amplitude.TrackEventWithProperties( TrackEventNameText, new Dictionary<string, string>() );
 
       private ICommand _trackEventCommand;
       public ICommand TrackEventCommand => _trackEventCommand ??= new RelayCommand( () => OnTrackEvent() );

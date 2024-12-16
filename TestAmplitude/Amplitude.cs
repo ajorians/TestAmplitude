@@ -32,14 +32,6 @@
          _amplitudeNetworkCalls.StopSession();
       }
 
-      public void TrackEvent( string eventName )
-      {
-         //Add this event to something that is responsible for handling it on the background such that this function can quickly return
-         _amplitudeBackgroundEventTransmitter.AddEvent( _amplitudeEventFactory.CreateEvent( eventName ) );
-
-         OnTrackedEvent?.Invoke( this, new() { EventName = eventName } );
-      }
-
       public void TrackEventWithProperties( string eventName, IDictionary<string, string> eventProperties )
       {
          //Add this event to something that is responsible for handling it on the background such that this function can quickly return

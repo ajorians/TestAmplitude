@@ -17,14 +17,16 @@ namespace TestAmplitude
       private readonly string _apiKey;
       private readonly string _userID;//Might remove this if start/end session could be an AmplitudeEvent
       private readonly string _deviceID;
+      private readonly IAmplitudeUserPropertiesProvider _userPropertiesProvider;
 
       private bool _sessionStarted;
 
-      public AmplitudeNetworkCalls( string apiKey, string userID, string deviceID )
+      public AmplitudeNetworkCalls( string apiKey, string userID, string deviceID, IAmplitudeUserPropertiesProvider userPropertiesProvider )
       {
          _apiKey = apiKey;
          _userID = userID;
          _deviceID = deviceID;
+         _userPropertiesProvider = userPropertiesProvider ?? throw new ArgumentNullException( nameof( userPropertiesProvider ) );
       }
 
       public async Task<bool> StartSession()
@@ -43,7 +45,7 @@ namespace TestAmplitude
             AmplitudeSimpleRequest request = new()
             {
                APIKey = _apiKey,
-               Events = [new AmplitudeEvent(){ EventType= "[Amplitude] Start Session", Time = DateTime.Now, UserID=_userID, DeviceID=_deviceID}]
+               Events = [new AmplitudeEvent(){ EventType= "session_start", UserProperties = _userPropertiesProvider.GetUserProperties(), Time = DateTime.Now, UserID=_userID, DeviceID=_deviceID}]
             };
 
             string jsonData = request.GetJson();
@@ -79,7 +81,7 @@ namespace TestAmplitude
             AmplitudeSimpleRequest request = new()
             {
                APIKey = _apiKey,
-               Events = [new AmplitudeEvent(){ EventType= "[Amplitude] End Session", Time = DateTime.Now, UserID=_userID, DeviceID = _deviceID }]
+               Events = [new AmplitudeEvent(){ EventType= "session_end", UserProperties = _userPropertiesProvider.GetUserProperties(), Time = DateTime.Now, UserID=_userID, DeviceID = _deviceID }]
             };
 
             string jsonData = request.GetJson();
