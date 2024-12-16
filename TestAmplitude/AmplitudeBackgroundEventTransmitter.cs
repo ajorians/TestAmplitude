@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 
 namespace TestAmplitude
 {
@@ -11,16 +6,19 @@ namespace TestAmplitude
    {
       private readonly IAmplitudeNetworkCalls _amplitudeNetworkCalls;
       private readonly IAmplitudeEventQueue _amplitudeEventQueue;
+      private readonly IAmplitudeExponentialBackoff _exponentialBackoff;
 
       private Thread _workerThread;
       private bool _keepRunning = false;
       private bool _beginShutdown = false;
 
       public AmplitudeBackgroundEventTransmitter( IAmplitudeNetworkCalls amplitudeNetworkCalls,
-                                                  IAmplitudeEventQueue amplitudeEventQueue )
+                                                  IAmplitudeEventQueue amplitudeEventQueue,
+                                                  IAmplitudeExponentialBackoff exponentialBackoff )
       {
          _amplitudeNetworkCalls = amplitudeNetworkCalls ?? throw new ArgumentNullException( nameof( amplitudeNetworkCalls ) );
          _amplitudeEventQueue = amplitudeEventQueue ?? throw new ArgumentNullException( nameof( amplitudeEventQueue ) );
+         _exponentialBackoff = exponentialBackoff ?? throw new ArgumentNullException( nameof( exponentialBackoff ) );
       }
 
       public void Startup()
@@ -50,6 +48,9 @@ namespace TestAmplitude
             _workerThread.Join();
             _workerThread = null;
          }
+
+         //Tell event queue to pack up all pending events to a file
+         _amplitudeEventQueue.PersistAllEvents();
       }
 
       public void AddEvent( AmplitudeEvent amplitudeEvent )
@@ -73,6 +74,11 @@ namespace TestAmplitude
             //Of course this isn't guaranteed (especially if we reduce the sleep time or if there is a lot of events going through)
             Thread.Sleep( TimeSpan.FromMilliseconds( 1_000 ) );
 
+            if ( !_exponentialBackoff.HaveWaitedEnoughTime() )
+            {
+               continue;
+            }
+
             //Ask the rate limiter for how many events we can handle for this request.  TODO: Add a rate limiter
             int numEventsCanHandle = int.MaxValue;
 
@@ -85,6 +91,12 @@ namespace TestAmplitude
                {
                   int numEventsCompleted = eventsToProcess.Count();
                   _amplitudeEventQueue.CompletedEvents( numEventsCompleted );
+                  _exponentialBackoff.Reset();
+               }
+               else
+               {
+                  //Exponential back off.  If offline/server issues I'd hate to try again every second
+                  _exponentialBackoff.IncrementFailure();
                }
             }
          }

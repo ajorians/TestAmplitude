@@ -90,9 +90,10 @@ namespace TestAmplitude
             AmplitudeUserPropertiesProvider amplitudeUserPropertiesProvider = new();
 
             AmplitudeNetworkCalls amplitudeNetworkCalls = new( APIKey, amplitudeUserIDCreator.GetUserID(), amplitudeDeviceIDCreator.GetDeviceID(), amplitudeUserPropertiesProvider );
-            AmplitudeEventQueue amplitudeEventQueue = new();
+            AmplitudeEventQueue amplitudeEventQueue = new( @"C:\Users\a.orians\AppData\Local\TechSmith\Camtasia Studio" );
             AmplitudeEventFactory amplitudeEventFactory = new( amplitudeUserIDCreator.GetUserID(), amplitudeDeviceIDCreator.GetDeviceID(), amplitudeUserPropertiesProvider );
-            AmplitudeBackgroundEventTransmitter amplitudeBackgroundEventTransmitter = new( amplitudeNetworkCalls, amplitudeEventQueue );
+            AmplitudeExponentialBackoff amplitudeExponentialBackoff = new();
+            AmplitudeBackgroundEventTransmitter amplitudeBackgroundEventTransmitter = new( amplitudeNetworkCalls, amplitudeEventQueue, amplitudeExponentialBackoff );
             _amplitude = new Amplitude( amplitudeEventFactory, amplitudeNetworkCalls, amplitudeBackgroundEventTransmitter );
 
             AmplitudeOutput += $"New session with Key ({APIKey}){Environment.NewLine}";
