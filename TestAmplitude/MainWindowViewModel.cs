@@ -96,7 +96,7 @@ namespace TestAmplitude
             AmplitudeEventFactory amplitudeEventFactory = new( amplitudeUserIDCreator.GetUserID(), amplitudeDeviceIDCreator.GetDeviceID(), amplitudeUserPropertiesProvider );
             AmplitudeExponentialBackoff amplitudeExponentialBackoff = new();
             AmplitudeBackgroundEventTransmitter amplitudeBackgroundEventTransmitter = new( amplitudeNetworkCalls, amplitudeEventQueue, amplitudeExponentialBackoff );
-            _amplitude = new Amplitude( amplitudeEventFactory, amplitudeNetworkCalls, amplitudeBackgroundEventTransmitter );
+            _amplitude = new Amplitude( amplitudeEventFactory, amplitudeBackgroundEventTransmitter );
 
             AmplitudeOutput += $"New session with Key ({APIKey}){Environment.NewLine}";
 
